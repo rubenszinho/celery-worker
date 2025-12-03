@@ -1,86 +1,8 @@
 # Celery Worker Template
 
-[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/template/celery-worker)
+[![Deploy on Railway](https://railway.com/button.svg)](https://railway.com/deploy/fastapi-celery-beat-worker-flower?referralCode=5oF91f&utm_medium=integration&utm_source=template&utm_campaign=generic)
 
 Production-ready Celery worker with example tasks, retry logic, error handling, and Railway deployment support.
-
-## Quick Start
-
-### Local Development with Docker
-
-```bash
-# Clone or copy this template
-cd celery-worker-template
-
-# Create env.example file
-cp env.example .env
-
-# Start services
-docker-compose up
-
-# Worker will start processing tasks
-```
-
-### Manual Setup
-
-```bash
-# Install dependencies
-pip install .
-
-# Or with dev dependencies
-pip install -e ".[dev]"
-
-# Start Redis (in separate terminal)
-redis-server
-
-# Start Celery Worker
-celery -A worker.celery_app worker --loglevel=info
-```
-
-## Example Tasks
-
-### 1. Simple Message Processing
-
-```python
-from app.tasks import example_task
-
-result = example_task.delay("Hello, World!")
-print(result.get())
-# Output: {"processed": "Hello, World!", "length": 13, ...}
-```
-
-### 2. Async Data Processing
-
-```python
-from app.tasks import async_processing_task
-
-data = {"user_id": 123, "action": "signup"}
-result = async_processing_task.delay(data)
-```
-
-### 3. Batch Processing
-
-```python
-from app.tasks import batch_processing_task
-
-items = ["item1", "item2", "item3"]
-result = batch_processing_task.delay(items)
-```
-
-### 4. Long Running Task
-
-```python
-from app.tasks import long_running_task
-
-result = long_running_task.delay(duration=30)
-# Check progress: result.info
-```
-
-## Deploy to Railway
-
-### One-Click Deploy
-
-[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/template/celery-worker)
 
 ### Manual Deployment
 
@@ -109,41 +31,11 @@ result = long_running_task.delay(duration=30)
 
 For full functionality, deploy all three templates:
 
-1. FastAPI template (triggers tasks)
-2. This Worker template (processes tasks)
-3. Celery Beat template (schedules tasks)
+1. [FastAPI template](https://github.com/rubenszinho/celery-worker) (triggers tasks)
+2. This Celery Worker template
+3. [Celery Beat template](https://github.com/rubenszinho/celery-beat) (schedules tasks)
 
 All should share the same Redis instance via `${{Redis.REDIS_URL}}`.
-
-## Environment Variables
-
-| Variable                     | Required | Default                  | Description                  |
-| ---------------------------- | -------- | ------------------------ | ---------------------------- |
-| `REDIS_URL`                  | Yes      | redis://localhost:6379/0 | Redis connection string      |
-| `CELERY_BROKER_URL`          | No       | Uses REDIS_URL           | Celery broker URL            |
-| `CELERY_RESULT_BACKEND`      | No       | Uses REDIS_URL           | Celery result backend        |
-| `WORKER_CONCURRENCY`         | No       | 4                        | Number of worker processes   |
-| `WORKER_PREFETCH_MULTIPLIER` | No       | 1                        | Task prefetch multiplier     |
-| `WORKER_MAX_TASKS_PER_CHILD` | No       | 1000                     | Max tasks per worker process |
-| `TASK_MAX_RETRIES`           | No       | 3                        | Max retry attempts           |
-
-## Project Structure
-
-```
-celery-worker-template/
-├── app/
-│   ├── __init__.py          # Package init
-│   ├── celery_config.py     # Celery configuration
-│   ├── config.py            # Environment configuration
-│   └── tasks.py             # Task definitions
-├── worker.py                # Worker entrypoint
-├── Dockerfile               # Production container
-├── docker-compose.yml       # Local development
-├── pyproject.toml           # Python dependencies
-├── env.example              # Environment template
-├── railway.json             # Railway configuration
-└── README.md               # This file
-```
 
 ## Adding Custom Tasks
 
@@ -287,14 +179,6 @@ WORKER_CONCURRENCY=2
 # Reduce max tasks per child
 WORKER_MAX_TASKS_PER_CHILD=100
 ```
-
-## Production Checklist
-
-Set worker concurrency, task timeouts, error tracking, monitoring, Redis password, task routing.
-
-## Related Templates
-
-[FastAPI Template](../fastapi-template) | [Celery Beat Template](../celery-beat-template)
 
 ## Performance Tips
 
